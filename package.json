@@ -1,0 +1,20 @@
+{
+  "name": "api-medicamentos",
+  "version": "1.0.0",
+  "description": "parcial 1 pw2",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "csv-parser": "^3.2.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
