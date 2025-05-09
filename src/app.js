@@ -9,8 +9,8 @@ app.use(express.json());
 let medicamentos = [];
 let nextId = 1;
 
-// Cargar datos desde CSV
-fs.createReadStream("../data/medicamentos.csv")
+// Cargar datos desde CSV 
+fs.createReadStream("data/medicamentos.csv")
   .pipe(csv({ separator: ";" }))
   .on("data", (data) => {
     const limpio = {};
@@ -22,20 +22,21 @@ fs.createReadStream("../data/medicamentos.csv")
     medicamentos.push(limpio);
   })
   .on("end", () => {
-    console.log("Medicamentos cargados desde CSV");
+    console.log("Medicamentos cargados desde CSV"); 
   });
 
-// Inyectar los datos a las rutas
+// Middleware personalizado, crea un ID para medicamentos
+//automáticamente
 app.use((req, res, next) => {
   req.medicamentos = medicamentos;
   req.nextId = () => nextId++;
   next();
 });
 
-// Rutas
+// Ruta de medicamento
 app.use("/medicamentos", medicamentosRouter);
 
-// Ruta adicional
+// Ruta adicional confirmando el funcionamiento del servidor
 app.get("/info", (req, res) => {
   res.send("API de medicamentos funcionando correctamente");
 });

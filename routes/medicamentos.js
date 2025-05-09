@@ -22,6 +22,15 @@ router.get("/filtro/:droga", (req, res) => {
   res.json(resultados);
 });
 
+// GET /medicamentos/filtro2/:laboratorio
+/*router.get("/filtro2/:laboratorio", (req, res) => {
+  const laboratorio = req.params.laboratorio.toLowerCase();
+  const resultados = req.medicamentos.filter(m => m.LABORATORIO && m.LABORATORIO.toLowerCase().includes(laboratorio));
+  if (resultados.length === 0) return res.status(404).json({ mensaje: "No se encontraron medicamentos con ese laboratorio" });
+  res.json(resultados);
+}); */
+
+
 // POST /medicamentos
 router.post("/", (req, res) => {
   const nuevo = req.body;
@@ -51,7 +60,10 @@ router.delete("/:id", (req, res) => {
   res.sendStatus(204);
 });
 
+
+
 // GET /medicamentos/ordenar/:campo
+/*
 router.get("/ordenar/:campo", (req, res) => {
   const campo = req.params.campo.toUpperCase();
   const copia = [...req.medicamentos];
@@ -68,6 +80,6 @@ router.get("/ordenar/:campo", (req, res) => {
 
   res.json(copia);
 });
-
+*/
 
 module.exports = router;

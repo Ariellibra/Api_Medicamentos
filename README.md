@@ -3,17 +3,11 @@
  ¿Que hace este proyecto?
 Este proyecto consiste en una API REST desarrollada con **Node.js** y **Express.js**, cuya funcionalidad principal es gestionar información sobre medicamentos. La API permite listar todos los medicamentos, obtener uno por su ID, buscar medicamentos por nombre, y filtrar según su presentación.
 
-El sistema  sigue el patrón **MVC (Modelo-Vista-Controlador)** para mantener una  organizaso el código.
-
 ---
 
-##  ¿ Porque lo elegimos?
-
-La elección de esto se baso en:
-
-- **Es sumamente importante**: los medicamentos son datos ampliamente utilizados en sectores como la salud, farmacia y tecnología médica.
-- **Fue mas sencillo de entender**: permite aplicar conceptos fundamentales de desarrollo backend con Node.js.
-- **Se puede ampliar**: se puede extender fácilmente integrando bases de datos reales, autenticación, y más funcionalidades.
+##  ¿ Porque lo elegimos este tema?
+Este tema elegimos por que consideramos importante el mundo farmacológico, partiendo como
+una de las entidades más importantes del país el PAMI. 
 
 ---
 
@@ -161,7 +155,7 @@ GET	/info	—	Texto informativo sobre el estado de la API
 
 ##  Conclusión
 
-Esta API representa un ejemplo práctico de desarrollo backend con Node.js. Se eligió por su claridad, aplicabilidad en contextos reales y posibilidad de extenderse fácilmente. La estructura modular y la organización MVC permiten mantener un código limpio y mantenible.
+Esta API representa un ejemplo práctico de desarrollo backend con Node.js. Se eligió por su claridad, aplicabilidad en contextos reales y posibilidad de extenderse fácilmente. La estructura modular junto con las rutas utilizadas con Express nos permitió trabajar con un código mas legible y ordenado.
 
 > Ideal para futuras integraciones con interfaces web o móviles.
 
