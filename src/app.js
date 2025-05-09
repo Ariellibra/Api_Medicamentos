@@ -10,7 +10,7 @@ let medicamentos = [];
 let nextId = 1;
 
 // Cargar datos desde CSV 
-fs.createReadStream("data/medicamentos.csv")
+fs.createReadStream(__dirname + '/../data/medicamentos.csv')
   .pipe(csv({ separator: ";" }))
   .on("data", (data) => {
     const limpio = {};
