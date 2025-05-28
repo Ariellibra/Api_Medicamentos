@@ -1,0 +1,9 @@
+# .cpanel.yml  (guárdalo en la raíz del proyecto)
+---
+deployment:
+  tasks:
+    # 1) Instalar dependencias de producción
+    - /home/librahostcom/nodevenv/public_html/Api_Medicamentos/18/bin/npm install --omit=dev
+
+    # 2) Reiniciar la app Node (Passenger)
+    - /usr/local/cpanel/3rdparty/bin/passenger-config restart-app /home/librahostcom/public_html/Api_Medicamentos
