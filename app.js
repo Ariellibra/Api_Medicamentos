@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const csv = require("csv-parser");
-const medicamentosRouter = require("../routes/medicamentos");
+const medicamentosRouter = require("./routes/medicamentos");
 
 const app = express();
 app.use(express.json());
