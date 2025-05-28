@@ -4,7 +4,10 @@ const csv = require("csv-parser");
 const medicamentosRouter = require("./routes/medicamentos");
 
 const app = express();
-const PORT = process.env.PORT || 7050;
+
+/* ───── CONFIG STATIC  (para servir index.html) ───── */
+app.use(express.static(path.join(__dirname, "public")));   // <‐‐ poné tu index.html dentro de /public
+/* ──────────────────────────────────────────────────── */
 
 app.use(express.json());
 
@@ -43,8 +46,11 @@ app.get("/info", (req, res) => {
   res.send("API de medicamentos funcionando correctamente");
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+/*─── export para Passenger ───*/
+module.exports = app;
 
+/*─── opcional: levantate solo si corro `node app.js` localmente ───*/
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Servidor local en puerto ${PORT}`));
+}
