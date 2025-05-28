@@ -4,6 +4,8 @@ const csv = require("csv-parser");
 const medicamentosRouter = require("./routes/medicamentos");
 
 const app = express();
+const PORT = process.env.PORT || 7050;
+
 app.use(express.json());
 
 let medicamentos = [];
@@ -42,6 +44,7 @@ app.get("/info", (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(7050, () => {
-  console.log("Servidor corriendo en el puerto 7050");
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
