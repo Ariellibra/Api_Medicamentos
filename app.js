@@ -1,8 +1,10 @@
 const express = require("express");
-const fs = require("fs");
+// const fs = require("fs");
 const path = require("path");
-const csv = require("csv-parser");
+// const csv = require("csv-parser");
 const medicamentosRouter = require("./routes/medicamentos");
+const errorHandler = require("./middleware/errorHandler")
+const setupRouter = require("./routes/setup");
 
 const app = express();
 
@@ -11,41 +13,46 @@ app.use(express.static(path.join(__dirname, "public")));   // <‐‐ poné tu i
 /* ──────────────────────────────────────────────────── */
 
 app.use(express.json());
+app.use("/setup", setupRouter);
 
-let medicamentos = [];
-let nextId = 1;
+
+// let medicamentos = [];
+// let nextId = 1;
 
 // Cargar datos desde CSV 
-fs.createReadStream(__dirname + '/data/medicamentos.csv')
-  .pipe(csv({ separator: ";" }))
-  .on("data", (data) => {
-    const limpio = {};
-    for (let key in data) {
-      const clave = key.trim().toUpperCase();
-      limpio[clave] = data[key].trim();
-    }
-    limpio.id = nextId++;
-    medicamentos.push(limpio);
-  })
-  .on("end", () => {
-    console.log("Medicamentos cargados desde CSV"); 
-  });
+// fs.createReadStream(__dirname + '/data/medicamentos.csv')
+//   .pipe(csv({ separator: ";" }))
+//   .on("data", (data) => {
+//     const limpio = {};
+//     for (let key in data) {
+//       const clave = key.trim().toUpperCase();
+//       limpio[clave] = data[key].trim();
+//     }
+//     limpio.id = nextId++;
+//     medicamentos.push(limpio);
+//   })
+//   .on("end", () => {
+//     console.log("Medicamentos cargados desde CSV"); 
+//   });
 
 // Middleware personalizado, crea un ID para medicamentos
 //automáticamente
-app.use((req, res, next) => {
-  req.medicamentos = medicamentos;
-  req.nextId = () => nextId++;
-  next();
-});
+// app.use((req, res, next) => {
+//   req.medicamentos = medicamentos;
+//   req.nextId = () => nextId++;
+//   next();
+// });
 
 // Ruta de medicamento
 app.use("/medicamentos", medicamentosRouter);
 
 // Ruta adicional confirmando el funcionamiento del servidor
-app.get("/info", (req, res) => {
+app.get("/info", (_req, res) => {
   res.send("API de medicamentos funcionando correctamente");
 });
+
+// Middleware de error global (al final SIEMPRE)
+app.use(errorHandler);
 
 /*─── export para Passenger ───*/
 module.exports = app;

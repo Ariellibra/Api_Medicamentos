@@ -1,14 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <title>API Medicamentos</title>
 </head>
 
 <body>
-    <h1>Hola</h1>
+    <h1>API de Medicamentos</h1>
+    <button id="btnSetup">Crear tabla + importar CSV</button>
+    <p id="msg"></p>
+
+    <script>
+        document.getElementById("btnSetup").onclick = async () => {
+            document.getElementById("msg").textContent = "Procesando…";
+            try {
+                const r = await fetch("/setup", { method: "POST" });
+                const j = await r.json();
+                document.getElementById("msg").textContent =
+                    j.ok ? `Importados ${j.inserted} registros ✅` : "Error 😢";
+            } catch (e) {
+                document.getElementById("msg").textContent = e.message;
+            }
+        };
+    </script>
 </body>
 
 </html>
