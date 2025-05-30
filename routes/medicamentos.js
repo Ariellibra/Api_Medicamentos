@@ -12,20 +12,6 @@ router.get("/", catchAsync( async (_req, res) => {
 //   res.json(req.medicamentos);
 // });
 
-
-// GET /medicamentos/:id
-router.get("/:id", catchAsync( async (req, res) => {
-  const [rows] = await db.query("SELECT * FROM medicamentos WHERE id = ?", [req.params.id]);
-  if (rows.length === 0) return res.status(404).json({ mensaje: "Medicamento no encontrado" });
-  res.json(rows[0]);
-}));
-// router.get("/:id", (req, res) => {
-//   const id = parseInt(req.params.id);
-//   const encontrado = req.medicamentos.find(m => m.id === id);
-//   if (!encontrado) return res.status(404).json({ mensaje: "Medicamento no encontrado" });
-//   res.json(encontrado);
-// });
-
 // GET /medicamentos/filtro/:droga
 router.get("/filtro/:droga", catchAsync(async (req, res) => {
   const droga = `%${req.params.droga}%`;
@@ -64,7 +50,7 @@ router.post("/", catchAsync(async (req, res) => {
 
   if (!DROGA || !MARCA) return res.status(400).json({ mensaje: "Faltan campos obligatorios" });
 
-  const [result] = await db.query(`INSTERT INTO medicamentos (droga, marca, presentacion, laboratorio, cobertura, copago) 
+  const [result] = await db.query(`INSERT INTO medicamentos (droga, marca, presentacion, laboratorio, cobertura, copago) 
     VALUES (?, ?, ?, ?, ?, ?)`, [DROGA, MARCA, PRESENTACION, LABORATORIO, COBERTURA, COPAGO]);
   res.status(201).json({ mensaje: "Medicamento agregado", id: result.insertId });
 }));
@@ -117,7 +103,18 @@ router.delete("/:id", catchAsync(async (req, res) => {
 //   res.sendStatus(204);
 // });
 
-
+// GET /medicamentos/:id
+router.get("/:id", catchAsync( async (req, res) => {
+  const [rows] = await db.query("SELECT * FROM medicamentos WHERE id = ?", [req.params.id]);
+  if (rows.length === 0) return res.status(404).json({ mensaje: "Medicamento no encontrado" });
+  res.json(rows[0]);
+}));
+// router.get("/:id", (req, res) => {
+//   const id = parseInt(req.params.id);
+//   const encontrado = req.medicamentos.find(m => m.id === id);
+//   if (!encontrado) return res.status(404).json({ mensaje: "Medicamento no encontrado" });
+//   res.json(encontrado);
+// });
 
 // GET /medicamentos/ordenar/:campo
 /*

@@ -51,6 +51,10 @@ app.get("/info", (_req, res) => {
   res.send("API de medicamentos funcionando correctamente");
 });
 
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 // Middleware de error global (al final SIEMPRE)
 app.use(errorHandler);
 
