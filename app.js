@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require("express");
 // const fs = require("fs");
 const path = require("path");
@@ -53,6 +55,10 @@ app.get("/info", (_req, res) => {
 
 app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("*", (_req, res) => {
+  res.redirect("/");
 });
 
 // Middleware de error global (al final SIEMPRE)

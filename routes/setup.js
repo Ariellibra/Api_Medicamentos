@@ -7,6 +7,7 @@ const db = require("../db");
 
 router.post("/", async (_req, res) => {
   /* 1. Crear la tabla si no existe */
+  console.log("Creando tabla...");
   await db.query(`
     CREATE TABLE IF NOT EXISTS medicamentos (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -20,10 +21,12 @@ router.post("/", async (_req, res) => {
   `);
 
   /* 2. Vaciar la tabla (opcional) */
+  console.log("Vaciando tabla...");
   await db.query("TRUNCATE TABLE medicamentos");
 
   /* 3. Leer CSV y preparar datos */
   const file = path.join(__dirname, "..", "data", "medicamentos.csv");
+  console.log("Leyendo CSV:", file);
   const rows = [];
 
   fs.createReadStream(file)
@@ -31,7 +34,7 @@ router.post("/", async (_req, res) => {
     .on("data", (d) => {
       // limpiar signos $ y % y espacios
       const cobertura = parseFloat(String(d.COBERTURA).replace("%", "").trim());
-      const copago    = parseFloat(String(d.COPAGO).replace("$", "").replace(",", "").trim());
+      const copago = parseFloat(String(d.COPAGO).replace("$", "").replace(",", "").trim());
 
       rows.push([
         d.DROGA?.trim(),
