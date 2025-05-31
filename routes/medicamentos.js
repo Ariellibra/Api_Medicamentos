@@ -12,16 +12,16 @@ router.get("/", catchAsync(async (_req, res) => {
 // GET /medicamentos/filtro/:droga
 router.get("/filtro/:droga", catchAsync(async (req, res) => {
   const droga = `%${req.params.droga}%`;
-  const [rows] = await db.query("SELECT * FROM medicamentos WHERE droga LIKE ?", [droga])
-  if (rows.length === 0) return res.status(404).json({ mensaje: "No se encontraron medicamentos con esa droga" })
+  const [rows] = await db.query("SELECT * FROM medicamentos WHERE droga LIKE ?", [droga]);
+  if (rows.length === 0) return res.status(404).json({ mensaje: "No se encontraron medicamentos con esa droga" });
   res.json(rows);
 }));
 
 // GET /medicamentos/laboratorio/:nombre
 router.get("/laboratorio/:nombre", catchAsync(async (req, res) => {
   const laboratorio = `%${req.params.nombre}%`;
-  const [rows] = await db.query("SELECT * FROM medicamentos WHERE laboratorio LIKE ?", [laboratorio])
-  if (rows.length === 0) return res.status(404).json({ mensaje: "No se encontraron medicamentos de ese laboratorio" })
+  const [rows] = await db.query("SELECT * FROM medicamentos WHERE laboratorio LIKE ?", [laboratorio]);
+  if (rows.length === 0) return res.status(404).json({ mensaje: "No se encontraron medicamentos de ese laboratorio" });
   res.json(rows);
 }));
 
@@ -43,14 +43,13 @@ router.put("/:id", catchAsync(async (req, res) => {
 
   const [result] = await db.query(
     `UPDATE medicamentos SET droga=?, marca=?, presentacion=?, laboratorio=?, cobertura=?, copago=?
-    WHERE id=?`,
+     WHERE id=?`,
     [DROGA, MARCA, PRESENTACION, LABORATORIO, COBERTURA, COPAGO, id]
   );
 
   if (result.affectedRows === 0) return res.status(404).json({ mensaje: "Medicamento no encontrado" });
 
   res.json({ mensaje: "Medicamento actualizado" });
-
 }));
 
 // DELETE /medicamentos/:id
@@ -67,6 +66,5 @@ router.get("/:id", catchAsync(async (req, res) => {
   if (rows.length === 0) return res.status(404).json({ mensaje: "Medicamento no encontrado" });
   res.json(rows[0]);
 }));
-
 
 module.exports = router;
