@@ -2,8 +2,6 @@ require('dotenv').config();
 
 const express = require("express");
 
-const express = require("express");
-
 // DEBUG DE RUTAS
 ["get", "post", "put", "delete", "use"].forEach(method => {
   const original = express.Router.prototype[method];
