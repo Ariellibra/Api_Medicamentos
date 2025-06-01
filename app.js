@@ -1,6 +1,20 @@
 require('dotenv').config();
 
 const express = require("express");
+
+const express = require("express");
+
+// DEBUG DE RUTAS
+["get", "post", "put", "delete", "use"].forEach(method => {
+  const original = express.Router.prototype[method];
+  express.Router.prototype[method] = function (path, ...rest) {
+    if (typeof path === "string") {
+      console.log(`[RUTA] ${method.toUpperCase()} ${path}`);
+    }
+    return original.call(this, path, ...rest);
+  };
+});
+
 const path = require("path");
 const medicamentosRouter = require("./routes/medicamentos");
 const errorHandler = require("./middleware/errorHandler")
@@ -8,14 +22,19 @@ const setupRouter = require("./routes/setup");
 
 const app = express();
 
+console.log("Iniciando app...");
+
 /* ───── CONFIG STATIC  (para servir index.html) ───── */
 app.use(express.static(path.join(__dirname, "public")));   // <‐‐ poné tu index.html dentro de /public
 /* ──────────────────────────────────────────────────── */
 
 app.use(express.json());
+
+console.log("Cargando setupRouter");
 app.use("/setup", setupRouter);
 
 // Ruta de medicamento
+console.log("Cargando medicamentosRouter");
 app.use("/medicamentos", medicamentosRouter);
 
 // Ruta adicional confirmando el funcionamiento del servidor

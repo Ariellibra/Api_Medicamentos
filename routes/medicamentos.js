@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const catchAsync = require("../utils/catchAsync");
 
+console.log("Cargando rutas de medicamentos...");
 // GET /medicamentos
 router.get("/", catchAsync(async (_req, res) => {
   const [rows] = await db.query("SELECT * FROM medicamentos");

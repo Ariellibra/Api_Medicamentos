@@ -5,6 +5,7 @@ const path = require("path");
 const csv = require("csv-parser");
 const db = require("../db");
 
+console.log("Cargando rutas de setup...");
 router.post("/", async (_req, res) => {
   /* 1. Crear la tabla si no existe */
   console.log("Creando tabla...");
