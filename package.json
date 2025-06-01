@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test-db" : "node test-db.js"
+    "test-db" : "node test-db.js",
+    "inspector" : "node inspector.js"
   },
   "author": "",
   "license": "ISC",
