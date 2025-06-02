@@ -33,6 +33,16 @@ router.post("/", async (_req, res) => {
   fs.createReadStream(file)
     .pipe(csv({ separator: ";" }))
     .on("data", (d) => {
+
+      if (d && Object.keys(d)[0].charCodeAt(0) === 0xFEFF) {
+        const clean = {};
+        for (const k in d) {
+          const cleanKey = k.replace(/^\uFEFF/, ""); // elimina el BOM si existe
+          clean[cleanKey] = d[k];
+        }
+        d = clean;
+      }
+
       // limpiar signos $ y % y espacios
       const cobertura = parseFloat(String(d.COBERTURA).replace("%", "").trim());
       const copago = parseFloat(String(d.COPAGO).replace("$", "").replace(",", "").trim());
