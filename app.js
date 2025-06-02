@@ -44,10 +44,6 @@ app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get("*", (_req, res) => {
-  res.redirect("/");
-});
-
 // Middleware de error global (al final SIEMPRE)
 app.use(errorHandler);
 
