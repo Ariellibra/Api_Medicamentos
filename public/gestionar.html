@@ -21,13 +21,14 @@
     <section>
         <h2>Crear nuevo medicamento</h2>
         <form onsubmit="crear(event)">
-            <input id="idActual" readonly placeholder="ID actual (para editar)">
+            <input id="idActual" readonly placeholder="ID actual (para editar)"><br>
             <input placeholder="Droga" id="droga" required><br>
             <input placeholder="Marca" id="marca" required><br>
             <input placeholder="Presentación" id="presentacion"><br>
             <input placeholder="Laboratorio" id="laboratorio"><br>
             <input placeholder="Cobertura (%)" id="cobertura" type="number" step="0.01"><br>
             <input placeholder="Copago ($)" id="copago" type="number" step="0.01"><br>
+            <button type="button" onclick="limpiar()">Limpiar</button>
             <button type="submit">Crear</button>
             <button type="button" onclick="editar()">Actualizar</button>
         </form>
@@ -47,6 +48,16 @@
 
     <script>
         const $ = (id) => document.getElementById(id);
+
+        function limpiar() {
+            $('idActual').value = "";
+            $('droga').value = "";
+            $('marca').value = "";
+            $('presentacion').value = "";
+            $('laboratorio').value = "";
+            $('cobertura').value = "";
+            $('copago').value = "";
+        }
 
         async function buscar() {
             const id = +$('buscarId').value;
