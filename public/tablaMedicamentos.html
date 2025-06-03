@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Medicamentos</title>
+    <style>
+        table,
+        td,
+        th {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Listado de Medicamentos</h1>
+    <table id="tabla">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Droga</th>
+                <th>Marca</th>
+                <th>Lab</th>
+                <th>Cobertura</th>
+                <th>Copago</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <a href="index.html"><button>Volver al inicio</button></a>
+    <a href="gestionar.html"><button>Ir a gestionar medicamentos</button></a>
+
+    <!-- Modal de edición -->
+    <div id="modal">
+        <div id="modal-content">
+            <h3>Editar medicamento</h3>
+            <input id="editId" type="hidden">
+            <input id="editDroga" placeholder="Droga"><br>
+            <input id="editMarca" placeholder="Marca"><br>
+            <input id="editPresentacion" placeholder="Presentación"><br>
+            <input id="editLab" placeholder="Laboratorio"><br>
+            <input id="editCobertura" type="number" step="0.01" placeholder="Cobertura"><br>
+            <input id="editCopago" type="number" step="0.01" placeholder="Copago"><br><br>
+            <button onclick="guardarEdicion()">Guardar</button>
+            <button onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        async function cargarTabla() {
+            const r = await fetch('/medicamentos');
+            const data = await r.json();
+            const tbody = document.querySelector("#tabla tbody");
+            tbody.innerHTML = "";
+
+            data.forEach(med => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+      <td>${med.id}</td>
+      <td>${med.droga}</td>
+      <td>${med.marca}</td>
+      <td>${med.laboratorio}</td>
+      <td>${med.cobertura}%</td>
+      <td>$${med.copago}</td>
+      <td>
+        <button onclick='abrirModal(${JSON.stringify(med)})'>✏️</button>
+        <button onclick='confirmarBorrado(${med.id})'>🗑️</button>
+      </td>
+    `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function abrirModal(med) {
+            $('modal').style.display = "flex";
+            $('editId').value = med.id;
+            $('editDroga').value = med.droga;
+            $('editMarca').value = med.marca;
+            $('editPresentacion').value = med.presentacion;
+            $('editLab').value = med.laboratorio;
+            $('editCobertura').value = med.cobertura;
+            $('editCopago').value = med.copago;
+        }
+
+        function cerrarModal() {
+            $('modal').style.display = "none";
+        }
+
+        async function guardarEdicion() {
+            const id = $('editId').value;
+            const datos = {
+                DROGA: $('editDroga').value,
+                MARCA: $('editMarca').value,
+                PRESENTACION: $('editPresentacion').value,
+                LABORATORIO: $('editLab').value,
+                COBERTURA: +$('editCobertura').value,
+                COPAGO: +$('editCopago').value
+            };
+            await fetch(`/medicamentos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+            cerrarModal();
+            cargarTabla();
+        }
+
+        async function confirmarBorrado(id) {
+            if (confirm(`¿Eliminar medicamento con ID ${id}?`)) {
+                await fetch(`/medicamentos/${id}`, { method: 'DELETE' });
+                cargarTabla();
+            }
+        }
+
+        // Iniciar al cargar
+        cargarTabla();
+    </script>
+
+</body>
+
+</html>
