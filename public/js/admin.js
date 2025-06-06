@@ -146,6 +146,7 @@ function confirmarBorrado(id) {
     modal.classList.remove("d-none");
     modal.classList.add("d-flex");
     $("confirmarId").value = id;
+    cerrarConfirmacion()
 }
 
 function cerrarConfirmacion() {
