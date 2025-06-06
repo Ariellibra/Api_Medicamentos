@@ -37,6 +37,27 @@
             text-align: center;
             font-size: 0.9rem;
         }
+
+        #modal,
+        #modalEliminar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+        }
     </style>
 </head>
 
@@ -71,6 +92,7 @@
                 <h5>Panel</h5>
                 <a href="#" data-target="ver" class="active">Ver Medicamentos</a>
                 <a href="#" data-target="crear">Crear</a>
+                <a href="#" data-target="buscar">Buscar</a>
                 <a href="#" data-target="editar">Editar</a>
                 <a href="#" data-target="eliminar">Eliminar</a>
             </div>
@@ -79,11 +101,25 @@
             <div class="col-md-9">
                 <h3 id="adminTitulo">Ver Medicamentos</h3>
 
+                <!-- Ver Medicamentos -->
                 <div id="ver" class="admin-section active">
-                    <button class="btn btn-outline-primary mb-3" onclick="cargarTodos()">Refrescar</button>
-                    <pre id="outputVer">Cargando...</pre>
+                    <table class="table table-striped" id="tablaMedicamentos">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Droga</th>
+                                <th>Marca</th>
+                                <th>Laboratorio</th>
+                                <th>Cobertura</th>
+                                <th>Copago</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
 
+                <!-- Crear -->
                 <div id="crear" class="admin-section">
                     <form onsubmit="crearMedicamento(event)">
                         <div class="row g-2">
@@ -105,12 +141,30 @@
                     </form>
                 </div>
 
+                <!-- Buscar -->
+                <div id="buscar" class="admin-section">
+                    <input id="buscarId" type="number" class="form-control mb-2" placeholder="Buscar por ID">
+                    <input id="buscarTexto" type="text" class="form-control mb-2"
+                        placeholder="Buscar por Marca o Laboratorio">
+                    <button class="btn btn-primary" onclick="buscarMedicamento()">Buscar</button>
+                    <pre id="resultadoBuscar" class="mt-2"></pre>
+                </div>
+
+                <!-- Editar -->
                 <div id="editar" class="admin-section">
                     <input id="editarId" type="number" class="form-control mb-2" placeholder="ID a editar">
+                    <input id="editarDroga" class="form-control mb-2" placeholder="Droga">
+                    <input id="editarMarca" class="form-control mb-2" placeholder="Marca">
+                    <input id="editarPresentacion" class="form-control mb-2" placeholder="Presentación">
+                    <input id="editarLab" class="form-control mb-2" placeholder="Laboratorio">
+                    <input id="editarCobertura" type="number" step="0.01" class="form-control mb-2"
+                        placeholder="Cobertura">
+                    <input id="editarCopago" type="number" step="0.01" class="form-control mb-2" placeholder="Copago">
                     <button class="btn btn-warning mb-3" onclick="editarMedicamento()">Editar</button>
                     <pre id="outputEditar"></pre>
                 </div>
 
+                <!-- Eliminar -->
                 <div id="eliminar" class="admin-section">
                     <input id="eliminarId" type="number" class="form-control mb-2" placeholder="ID a eliminar">
                     <button class="btn btn-danger" onclick="eliminarMedicamento()">Eliminar</button>
@@ -119,6 +173,36 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal de edición -->
+    <div id="modal" class="d-flex">
+        <div class="modal-content">
+            <h5>Editar Medicamento</h5>
+            <input id="editId" type="hidden">
+            <input id="editDroga" class="form-control my-1" placeholder="Droga">
+            <input id="editMarca" class="form-control my-1" placeholder="Marca">
+            <input id="editPresentacion" class="form-control my-1" placeholder="Presentación">
+            <input id="editLab" class="form-control my-1" placeholder="Laboratorio">
+            <input id="editCobertura" type="number" step="0.01" class="form-control my-1" placeholder="Cobertura">
+            <input id="editCopago" type="number" step="0.01" class="form-control my-1" placeholder="Copago">
+            <div class="text-end mt-3">
+                <button class="btn btn-primary me-2" onclick="guardarEdicion()">Guardar</button>
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de borrado -->
+    <div id="modalEliminar" class="d-flex">
+        <div class="modal-content">
+            <h5>¿Seguro que deseas eliminar este medicamento?</h5>
+            <input id="confirmarId" type="hidden">
+            <div class="text-end mt-3">
+                <button class="btn btn-danger me-2" onclick="eliminarMedicamentoConfirmado()">Sí, eliminar</button>
+                <button class="btn btn-secondary" onclick="cerrarConfirmacion()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
     <footer class="mt-5 bg-light">
         <p>&copy; 2025 InfoMedica. Todos los derechos reservados.</p>

@@ -1,96 +1,183 @@
 const $ = (id) => document.getElementById(id);
 
-// Cambiar sección activa al hacer clic en el panel izquierdo
-document.querySelectorAll('.admin-nav a').forEach(link => {
-    link.addEventListener('click', (e) => {
+// Navegación entre secciones
+const enlaces = document.querySelectorAll(".admin-nav a");
+const secciones = document.querySelectorAll(".admin-section");
+
+enlaces.forEach((enlace) => {
+    enlace.addEventListener("click", (e) => {
         e.preventDefault();
-
-        // Activar link
-        document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
-        link.classList.add('active');
-
-        // Mostrar sección correspondiente
-        const target = link.dataset.target;
-        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-        $(target).classList.add('active');
-
-        // Cambiar título
-        $('adminTitulo').textContent = link.textContent;
+        enlaces.forEach((el) => el.classList.remove("active"));
+        enlace.classList.add("active");
+        secciones.forEach((sec) => sec.classList.remove("active"));
+        const destino = $(enlace.dataset.target);
+        if (destino) destino.classList.add("active");
+        $("adminTitulo").textContent = enlace.textContent;
     });
 });
 
-async function cargarTodos() {
-    try {
-        const res = await fetch('/medicamentos');
-        const data = await res.json();
-        $('outputVer').textContent = JSON.stringify(data, null, 2);
-    } catch (e) {
-        $('outputVer').textContent = 'Error al cargar medicamentos';
-    }
+// Cargar todos los medicamentos en tabla
+async function cargarTabla() {
+    const r = await fetch("/medicamentos");
+    const data = await r.json();
+    const tbody = document.querySelector("#tablaMedicamentos tbody");
+    tbody.innerHTML = "";
+    data.forEach((med) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+      <td>${med.id}</td>
+      <td>${med.droga}</td>
+      <td>${med.marca}</td>
+      <td>${med.laboratorio}</td>
+      <td>${med.cobertura}%</td>
+      <td>$${med.copago}</td>
+      <td>
+        <button class='btn btn-sm btn-outline-primary' onclick='abrirModal(${JSON.stringify(
+            med
+        )})'>✏️</button>
+        <button class='btn btn-sm btn-outline-danger' onclick='confirmarBorrado(${med.id})'>🗑️</button>
+      </td>
+    `;
+        tbody.appendChild(tr);
+    });
 }
 
+// Crear medicamento
 async function crearMedicamento(e) {
     e.preventDefault();
     const datos = {
-        DROGA: $('droga').value,
-        MARCA: $('marca').value,
-        PRESENTACION: $('presentacion').value,
-        LABORATORIO: $('laboratorio').value,
-        COBERTURA: +$('cobertura').value,
-        COPAGO: +$('copago').value
+        DROGA: $("droga").value,
+        MARCA: $("marca").value,
+        PRESENTACION: $("presentacion").value,
+        LABORATORIO: $("laboratorio").value,
+        COBERTURA: +$("cobertura").value,
+        COPAGO: +$("copago").value,
     };
+    const r = await fetch("/medicamentos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos),
+    });
+    const j = await r.json();
+    $("outputCrear").textContent = JSON.stringify(j, null, 2);
+    cargarTabla();
+}
 
+// Buscar medicamento por ID o texto
+async function buscarMedicamento() {
+    const id = $("buscarId").value;
+    const texto = $("buscarTexto").value.trim().toLowerCase();
+    let resultado = null;
     try {
-        const r = await fetch('/medicamentos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datos)
-        });
-        const j = await r.json();
-        $('outputCrear').textContent = JSON.stringify(j, null, 2);
+        if (id) {
+            const r = await fetch(`/medicamentos/${id}`);
+            if (!r.ok) throw new Error("No encontrado");
+            resultado = await r.json();
+            rellenarCamposEditarYEliminar(resultado);
+        } else if (texto) {
+            const r = await fetch("/medicamentos");
+            const data = await r.json();
+            const filtro = data.find((med) =>
+                med.marca?.toLowerCase().includes(texto) ||
+                med.laboratorio?.toLowerCase().includes(texto)
+            );
+            if (!filtro) throw new Error("No encontrado");
+            resultado = filtro;
+            rellenarCamposEditarYEliminar(resultado);
+        } else {
+            throw new Error("Ingrese un ID o texto para buscar");
+        }
+        $("resultadoBuscar").textContent = JSON.stringify(resultado, null, 2);
     } catch (e) {
-        $('outputCrear').textContent = 'Error al crear medicamento';
+        $("resultadoBuscar").textContent = e.message;
     }
 }
 
+// Rellenar los campos de editar/eliminar
+function rellenarCamposEditarYEliminar(med) {
+    $("editarId").value = med.id;
+    $("editarDroga").value = med.droga;
+    $("editarMarca").value = med.marca;
+    $("editarPresentacion").value = med.presentacion;
+    $("editarLab").value = med.laboratorio;
+    $("editarCobertura").value = med.cobertura;
+    $("editarCopago").value = med.copago;
+    $("eliminarId").value = med.id;
+}
+
+// Editar medicamento
 async function editarMedicamento() {
-    const id = +$('editarId').value;
-    if (!id) return alert('Ingresá un ID válido');
-
+    const id = $("editarId").value;
     const datos = {
-        DROGA: prompt('Nueva droga'),
-        MARCA: prompt('Nueva marca'),
-        PRESENTACION: prompt('Nueva presentación'),
-        LABORATORIO: prompt('Nuevo laboratorio'),
-        COBERTURA: +prompt('Nueva cobertura'),
-        COPAGO: +prompt('Nuevo copago')
+        DROGA: $("editarDroga").value,
+        MARCA: $("editarMarca").value,
+        PRESENTACION: $("editarPresentacion").value,
+        LABORATORIO: $("editarLab").value,
+        COBERTURA: +$("editarCobertura").value,
+        COPAGO: +$("editarCopago").value,
     };
-
-    try {
-        const r = await fetch(`/medicamentos/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datos)
-        });
-        const j = await r.json();
-        $('outputEditar').textContent = JSON.stringify(j, null, 2);
-    } catch (e) {
-        $('outputEditar').textContent = 'Error al editar medicamento';
-    }
+    const r = await fetch(`/medicamentos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos),
+    });
+    const j = await r.json();
+    $("outputEditar").textContent = JSON.stringify(j, null, 2);
+    cargarTabla();
 }
 
+// Eliminar medicamento
 async function eliminarMedicamento() {
-    const id = +$('eliminarId').value;
-    if (!id) return alert('Ingresá un ID válido');
-    if (!confirm('¿Eliminar este medicamento?')) return;
-
-    try {
-        const r = await fetch(`/medicamentos/${id}`, { method: 'DELETE' });
-        $('outputEliminar').textContent = r.status === 204 ? 'Eliminado correctamente' : 'Error al eliminar';
-    } catch (e) {
-        $('outputEliminar').textContent = 'Error al eliminar medicamento';
-    }
+    const id = $("eliminarId").value;
+    $("confirmarId").value = id;
+    $("modalEliminar").style.display = "flex";
 }
 
-// Mostrar medicamentos al cargar
-window.addEventListener('DOMContentLoaded', cargarTodos);
+async function eliminarMedicamentoConfirmado() {
+    const id = $("confirmarId").value;
+    await fetch(`/medicamentos/${id}`, { method: "DELETE" });
+    $("outputEliminar").textContent = `Eliminado ID ${id}`;
+    $("modalEliminar").style.display = "none";
+    cargarTabla();
+}
+
+function cerrarConfirmacion() {
+    $("modalEliminar").style.display = "none";
+}
+
+function abrirModal(med) {
+    $("modal").style.display = "flex";
+    $("editId").value = med.id;
+    $("editDroga").value = med.droga;
+    $("editMarca").value = med.marca;
+    $("editPresentacion").value = med.presentacion;
+    $("editLab").value = med.laboratorio;
+    $("editCobertura").value = med.cobertura;
+    $("editCopago").value = med.copago;
+}
+
+function cerrarModal() {
+    $("modal").style.display = "none";
+}
+
+async function guardarEdicion() {
+    const id = $("editId").value;
+    const datos = {
+        DROGA: $("editDroga").value,
+        MARCA: $("editMarca").value,
+        PRESENTACION: $("editPresentacion").value,
+        LABORATORIO: $("editLab").value,
+        COBERTURA: +$("editCobertura").value,
+        COPAGO: +$("editCopago").value,
+    };
+    await fetch(`/medicamentos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos),
+    });
+    cerrarModal();
+    cargarTabla();
+}
+
+// Iniciar
+cargarTabla();
