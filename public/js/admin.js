@@ -137,7 +137,7 @@ async function eliminarMedicamentoConfirmado() {
     const id = $("confirmarId").value;
     await fetch(`/medicamentos/${id}`, { method: "DELETE" });
     $("outputEliminar").textContent = `Eliminado ID ${id}`;
-    $("modalEliminar").style.display = "none";
+    cerrarConfirmacion();
     cargarTabla();
 }
 
