@@ -141,12 +141,17 @@ async function eliminarMedicamentoConfirmado() {
     cargarTabla();
 }
 
+function confirmarBorrado(id) {
+    $("modalEliminar").removeAttribute("hidden");
+    $("confirmarId").value = id;
+}
+
 function cerrarConfirmacion() {
-    $("modalEliminar").style.display = "none";
+    $("modalEliminar").setAttribute("hidden", true);
 }
 
 function abrirModal(med) {
-    $("modal").style.display = "flex";
+    $("modal").removeAttribute("hidden");
     $("editId").value = med.id;
     $("editDroga").value = med.droga;
     $("editMarca").value = med.marca;
@@ -157,7 +162,7 @@ function abrirModal(med) {
 }
 
 function cerrarModal() {
-    $("modal").style.display = "none";
+    $("modal").setAttribute("hidden", true);
 }
 
 async function guardarEdicion() {
