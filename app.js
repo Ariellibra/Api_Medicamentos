@@ -18,6 +18,11 @@ const medicamentosRouter = require("./routes/medicamentos");
 const errorHandler = require("./middleware/errorHandler")
 const setupRouter = require("./routes/setup");
 
+// Servir Bootstrap CSS
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+// Servir Bootstrap JS (incluye Popper)
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
+
 const app = express();
 
 console.log("Iniciando app...");
