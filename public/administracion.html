@@ -137,6 +137,7 @@
                                     placeholder="Copago $"></div>
                         </div>
                         <button class="btn btn-success mt-3">Crear</button>
+                        <button type="button" class="btn btn-secondary mt-3 limpiar-btn">Limpiar</button>
                         <pre id="outputCrear" class="mt-2"></pre>
                     </form>
                 </div>
@@ -147,6 +148,7 @@
                     <input id="buscarTexto" type="text" class="form-control mb-2"
                         placeholder="Buscar por Marca o Laboratorio">
                     <button class="btn btn-primary" onclick="buscarMedicamento()">Buscar</button>
+                    <button type="button" class="btn btn-secondary mt-3 limpiar-btn">Limpiar</button>
                     <pre id="resultadoBuscar" class="mt-2"></pre>
                 </div>
 
@@ -161,6 +163,7 @@
                         placeholder="Cobertura">
                     <input id="editarCopago" type="number" step="0.01" class="form-control mb-2" placeholder="Copago">
                     <button class="btn btn-warning mb-3" onclick="editarMedicamento()">Editar</button>
+                    <button type="button" class="btn btn-secondary mt-3 limpiar-btn">Limpiar</button>
                     <pre id="outputEditar"></pre>
                 </div>
 
@@ -168,6 +171,7 @@
                 <div id="eliminar" class="admin-section">
                     <input id="eliminarId" type="number" class="form-control mb-2" placeholder="ID a eliminar">
                     <button class="btn btn-danger" onclick="eliminarMedicamento()">Eliminar</button>
+                    <button type="button" class="btn btn-secondary mt-3 limpiar-btn">Limpiar</button>
                     <pre id="outputEliminar" class="mt-2"></pre>
                 </div>
             </div>

@@ -193,5 +193,30 @@ async function guardarEdicion() {
     cargarTabla();
 }
 
+function limpiarInputsEnSeccion(seccionId) {
+    const seccion = document.getElementById(seccionId);
+    if (!seccion) return;
+
+    const inputs = seccion.querySelectorAll("input, pre");
+    inputs.forEach(input => {
+        if (input.tagName === "INPUT") input.value = "";
+        if (input.tagName === "PRE") input.textContent = "";
+    });
+}
+
 // Iniciar
 cargarTabla();
+
+document.addEventListener("DOMContentLoaded", () => {
+    const botonesLimpiar = document.querySelectorAll(".limpiar-btn");
+
+    botonesLimpiar.forEach(boton => {
+        boton.addEventListener("click", () => {
+            // Buscar el div padre con clase "admin-section"
+            const seccion = boton.closest(".admin-section");
+            if (seccion) {
+                limpiarInputsEnSeccion(seccion.id);
+            }
+        });
+    });
+});
