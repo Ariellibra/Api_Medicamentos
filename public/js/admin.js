@@ -142,16 +142,23 @@ async function eliminarMedicamentoConfirmado() {
 }
 
 function confirmarBorrado(id) {
-    $("modalEliminar").removeAttribute("hidden");
+    const modal = $("modalEliminar");
+    modal.classList.remove("d-none");
+    modal.classList.add("d-flex");
     $("confirmarId").value = id;
 }
 
 function cerrarConfirmacion() {
-    $("modalEliminar").setAttribute("hidden", true);
+    const modal = $("modalEliminar");
+    modal.classList.remove("d-flex");
+    modal.classList.add("d-none");
 }
 
 function abrirModal(med) {
-    $("modal").removeAttribute("hidden");
+    const modal = $("modal");
+    modal.classList.remove("d-none");
+    modal.classList.add("d-flex");
+
     $("editId").value = med.id;
     $("editDroga").value = med.droga;
     $("editMarca").value = med.marca;
@@ -162,7 +169,9 @@ function abrirModal(med) {
 }
 
 function cerrarModal() {
-    $("modal").setAttribute("hidden", true);
+    const modal = $("modal");
+    modal.classList.remove("d-flex");
+    modal.classList.add("d-none");
 }
 
 async function guardarEdicion() {
