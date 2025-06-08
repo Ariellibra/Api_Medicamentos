@@ -84,15 +84,18 @@ router.post("/", async (_req, res) => {
     const [labs] = await db.query("SELECT id, nombre FROM laboratorios");
     const labMap = new Map(labs.map(l => [l.nombre, l.id]));
 
-    /* 6. Preparar rows medicamentos */
-    const medsToInsert = rows.map(([droga, marca, presentacion, laboratorio, cobertura, copago]) => [
-      droga,
-      marca,
-      presentacion,
-      labMap.get(laboratorio) || null,
-      cobertura,
-      copago
-    ]);
+    /* 6. Preparar rows medicamentos (con validación de laboratorio_id) */
+    const medsToInsert = [];
+    for (const [droga, marca, presentacion, laboratorio, cobertura, copago] of rows) {
+      const laboratorioId = labMap.get(laboratorio);
+      if (!laboratorioId) {
+        console.warn("Laboratorio no encontrado (omitido):", laboratorio);
+        continue;
+      }
+      medsToInsert.push([
+        droga, marca, presentacion, laboratorioId, cobertura, copago
+      ]);
+    }
 
     await db.query(
       `INSERT INTO medicamentos (droga, marca, presentacion, laboratorio_id, cobertura, copago)
