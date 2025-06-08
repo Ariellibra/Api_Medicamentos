@@ -68,29 +68,35 @@ router.post("/", async (_req, res) => {
       ]);
     })
     .on("end", async () => {
+      const laboratoriosMap = new Map(); // nombre → id
+
       for (const med of rows) {
-        const [droga, marca, presentacion, laboratorioNombre, cobertura, copago] = med;
+        const nombre = med[3]; // LABORATORIO
 
-        // 1. Buscar si ya existe el laboratorio
-        let [labRows] = await db.query("SELECT id FROM laboratorios WHERE nombre = ?", [laboratorioNombre]);
-        let laboratorioId;
-
-        if (labRows.length === 0) {
-          // 2. Insertar laboratorio si no existe
-          const [result] = await db.query("INSERT INTO laboratorios (nombre, cantMedicamentos) VALUES (?, ?)", [laboratorioNombre, 1]);
-          laboratorioId = result.insertId;
-        } else {
-          // 3. Incrementar contador y obtener ID
-          laboratorioId = labRows[0].id;
-          await db.query("UPDATE laboratorios SET cantMedicamentos = cantMedicamentos + 1 WHERE id = ?", [laboratorioId]);
+        if (!laboratoriosMap.has(nombre)) {
+          const [r] = await db.query("INSERT INTO laboratorios (nombre, cantMedicamentos) VALUES (?, ?)", [nombre, 0]);
+          laboratoriosMap.set(nombre, r.insertId);
         }
 
-        // 4. Insertar medicamento con el laboratorio_id
+        // esta línea no hace nada útil:
+        // laboratoriosMap.set(nombre, laboratoriosMap.get(nombre));
+        // podés borrarla
+      }
+
+      for (const med of rows) {
+        const [droga, marca, presentacion, laboratorioNombre, cobertura, copago] = med;
+        const laboratorioId = laboratoriosMap.get(laboratorioNombre);
+
         await db.query(
           `INSERT INTO medicamentos (droga, marca, presentacion, laboratorio_id, cobertura, copago)
            VALUES (?, ?, ?, ?, ?, ?)`,
           [droga, marca, presentacion, laboratorioId, cobertura, copago]
         );
+      }
+
+      for (const [_, id] of laboratoriosMap) {
+        const [r] = await db.query("SELECT COUNT(*) as total FROM medicamentos WHERE laboratorio_id = ?", [id]);
+        await db.query("UPDATE laboratorios SET cantMedicamentos = ? WHERE id = ?", [r[0].total, id]);
       }
 
       res.json({ ok: true, mensaje: "Medicamentos y laboratorios cargados correctamente" });
@@ -99,6 +105,7 @@ router.post("/", async (_req, res) => {
       console.error(err);
       res.status(500).json({ ok: false, error: err.message });
     });
+
 });
 
 module.exports = router;
