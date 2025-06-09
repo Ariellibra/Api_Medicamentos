@@ -15,6 +15,7 @@ const express = require("express");
 
 const path = require("path");
 const medicamentosRouter = require("./routes/medicamentos");
+const laboratoriosRouter = require("./routes/laboratorios");
 const errorHandler = require("./middleware/errorHandler")
 const setupRouter = require("./routes/setup");
 
@@ -39,6 +40,8 @@ app.use("/setup", setupRouter);
 // Ruta de medicamento
 console.log("Cargando medicamentosRouter");
 app.use("/medicamentos", medicamentosRouter);
+
+app.use("/laboratorios", laboratoriosRouter);
 
 // Ruta adicional confirmando el funcionamiento del servidor
 app.get("/info", (_req, res) => {

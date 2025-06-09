@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Panel de Laboratorios</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark px-3">
+        <span class="navbar-brand mb-0 h1">Admin de Laboratorios</span>
+        <div>
+            <a href="index.html" class="btn btn-sm btn-outline-light">Inicio</a>
+            <a href="administracion.html" class="btn btn-sm btn-outline-light">Medicamentos</a>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Barra lateral izquierda -->
+            <div class="col-3 bg-light p-3 border-end" style="min-height: 100vh">
+                <h5>Acciones</h5>
+                <button class="btn btn-outline-primary w-100 my-1" onclick="mostrar('ver')">Ver Laboratorios</button>
+                <button class="btn btn-outline-success w-100 my-1" onclick="mostrar('crear')">Crear Laboratorio</button>
+                <button class="btn btn-outline-warning w-100 my-1" onclick="mostrar('editar')">Editar
+                    Laboratorio</button>
+                <button class="btn btn-outline-danger w-100 my-1" onclick="mostrar('eliminar')">Eliminar
+                    Laboratorio</button>
+            </div>
+
+            <!-- Panel de la derecha -->
+            <div class="col-9 p-4">
+                <h3 id="titulo">Panel de Laboratorios</h3>
+
+                <!-- Sección: Ver -->
+                <div id="ver" class="admin-section">
+                    <button class="btn btn-secondary mb-3" onclick="cargarLaboratorios()">Actualizar</button>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Cantidad de Medicamentos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaLabs"></tbody>
+                    </table>
+                </div>
+
+                <!-- Sección: Crear -->
+                <div id="crear" class="admin-section" style="display:none;">
+                    <input id="nuevoLab" class="form-control mb-2" placeholder="Nombre del laboratorio">
+                    <button class="btn btn-success" onclick="crearLaboratorio()">Crear</button>
+                    <pre id="outputCrear" class="mt-3"></pre>
+                </div>
+
+                <!-- Sección: Editar -->
+                <div id="editar" class="admin-section" style="display:none;">
+                    <input id="editId" type="number" class="form-control mb-2" placeholder="ID del laboratorio">
+                    <input id="editNombre" class="form-control mb-2" placeholder="Nuevo nombre">
+                    <button class="btn btn-warning" onclick="editarLaboratorio()">Editar</button>
+                    <pre id="outputEditar" class="mt-3"></pre>
+                </div>
+
+                <!-- Sección: Eliminar -->
+                <div id="eliminar" class="admin-section" style="display:none;">
+                    <input id="deleteId" type="number" class="form-control mb-2" placeholder="ID del laboratorio">
+                    <button class="btn btn-danger" onclick="eliminarLaboratorio()">Eliminar</button>
+                    <pre id="outputEliminar" class="mt-3"></pre>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="laboratorios.js"></script>
+</body>
+
+</html>
