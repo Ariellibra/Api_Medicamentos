@@ -7,10 +7,11 @@ router.get("/", async (_req, res, next) => {
   try {
     const [rows] = await db.query(`
       SELECT m.id, m.droga, m.marca, m.presentacion,
-             l.nombre AS laboratorio,
-             m.cobertura, m.copago
+       l.nombre AS laboratorio,
+       m.cobertura, m.copago
       FROM medicamentos m
       JOIN laboratorios l ON m.laboratorio_id = l.id
+      ORDER BY m.id ASC
     `);
     res.json(rows);
   } catch (err) {
@@ -31,6 +32,25 @@ router.get("/filtro/:droga", async (req, res, next) => {
       WHERE m.droga LIKE ?
     `, [droga]);
     if (!rows.length) return res.status(404).json({ mensaje: "No se encontraron medicamentos con esa droga" });
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /medicamentos/filtro/:marca - Buscar por marca
+router.get("/marca/:nombre", async (req, res, next) => {
+  try {
+    const nombre = `%${req.params.nombre}%`;
+    const [rows] = await db.query(`
+      SELECT m.id, m.nombre, m.marca, m.presentacion,
+             l.nombre AS laboratorio,
+             m.cobertura, m.copago
+      FROM medicamentos m
+      JOIN laboratorios l ON m.laboratorio_id = l.id
+      WHERE m.nombre LIKE ?
+    `, [nombre]);
+    if (!rows.length) return res.status(404).json({ mensaje: "No se encontraron medicamentos con esa nombre" });
     res.json(rows);
   } catch (err) {
     next(err);
