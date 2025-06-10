@@ -2,79 +2,188 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Panel de Laboratorios</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administración - InfoMedica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .admin-nav a {
+            display: block;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .admin-nav a.active,
+        .admin-nav a:hover {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        footer {
+            border-top: 1px solid #ccc;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        #modal,
+        #modalEliminar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark px-3">
-        <span class="navbar-brand mb-0 h1">Admin de Laboratorios</span>
-        <div>
-            <a href="index.html" class="btn btn-sm btn-outline-light">Inicio</a>
-            <a href="administracion.html" class="btn btn-sm btn-outline-light">Medicamentos</a>
+    <!-- Navbar superior -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand h1 mb-0" href="#">Admin Laboratorios</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div>
+                    <a href="index.html" class="btn btn-sm btn-outline-light">Inicio</a>
+                    <a href="adminMeds.html" class="btn btn-sm btn-outline-light">Medicamentos</a>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <div class="container-fluid">
+    <main class="container-fluid mt-4">
         <div class="row">
-            <!-- Barra lateral izquierda -->
-            <div class="col-3 bg-light p-3 border-end" style="min-height: 100vh">
-                <h5>Acciones</h5>
-                <button class="btn btn-outline-primary w-100 my-1" onclick="mostrar('ver')">Ver Laboratorios</button>
-                <button class="btn btn-outline-success w-100 my-1" onclick="mostrar('crear')">Crear Laboratorio</button>
-                <button class="btn btn-outline-warning w-100 my-1" onclick="mostrar('editar')">Editar
-                    Laboratorio</button>
-                <button class="btn btn-outline-danger w-100 my-1" onclick="mostrar('eliminar')">Eliminar
-                    Laboratorio</button>
+            <!-- Navegación lateral -->
+            <div class="col-md-3 admin-nav">
+                <h3>Panel</h3>
+                <a href="#" data-target="ver" class="active">Ver Laboratorios</a>
+                <a href="#" data-target="crear">Crear</a>
+                <a href="#" data-target="buscar">Buscar</a>
+                <a href="#" data-target="editar">Editar</a>
+                <a href="#" data-target="eliminar">Eliminar</a>
             </div>
 
-            <!-- Panel de la derecha -->
-            <div class="col-9 p-4">
-                <h3 id="titulo">Panel de Laboratorios</h3>
+            <!-- Panel de contenido -->
+            <div class="col-md-9">
+                <h3 id="adminTitulo">Ver Laboratorios</h3>
 
-                <!-- Sección: Ver -->
-                <div id="ver" class="admin-section">
-                    <button class="btn btn-secondary mb-3" onclick="cargarLaboratorios()">Actualizar</button>
-                    <table class="table table-bordered table-striped">
+                <!-- Ver Laboratorios -->
+                <div id="ver" class="admin-section active">
+                    <table class="table table-bordered table-striped" id="tablaLaboratorios">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Cantidad de Medicamentos</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaLabs"></tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
 
-                <!-- Sección: Crear -->
-                <div id="crear" class="admin-section" style="display:none;">
-                    <input id="nuevoLab" class="form-control mb-2" placeholder="Nombre del laboratorio">
-                    <button class="btn btn-success" onclick="crearLaboratorio()">Crear</button>
-                    <pre id="outputCrear" class="mt-3"></pre>
+                <!-- Crear -->
+                <div id="crear" class="admin-section">
+                    <form onsubmit="crearLaboratorio(event)">
+                        <div class="row g-2">
+                            <div class="col-md-12">
+                                <input id="nombreLab" class="form-control" placeholder="Nombre del Laboratorio"
+                                    required>
+                            </div>
+                        </div>
+                        <button class="btn btn-success mt-2">Crear</button>
+                        <button type="button" class="btn btn-secondary mt-2 limpiar-btn">Limpiar</button>
+                        <pre id="outputCrear" class="mt-3"></pre>
+                    </form>
                 </div>
 
-                <!-- Sección: Editar -->
-                <div id="editar" class="admin-section" style="display:none;">
-                    <input id="editId" type="number" class="form-control mb-2" placeholder="ID del laboratorio">
-                    <input id="editNombre" class="form-control mb-2" placeholder="Nuevo nombre">
-                    <button class="btn btn-warning" onclick="editarLaboratorio()">Editar</button>
-                    <pre id="outputEditar" class="mt-3"></pre>
+                <!-- Buscar -->
+                <div id="buscar" class="admin-section">
+                    <input id="buscarId" type="number" class="form-control mb-2" placeholder="Buscar por ID">
+                    <input id="buscarNombre" type="text" class="form-control mb-2" placeholder="Buscar por nombre">
+                    <button class="btn btn-primary mt-2" onclick="buscarLaboratorio()">Buscar</button>
+                    <button type="button" class="btn btn-secondary mt-2 limpiar-btn">Limpiar</button>
+                    <pre id="resultadoBuscar" class="mt-3"></pre>
                 </div>
 
-                <!-- Sección: Eliminar -->
-                <div id="eliminar" class="admin-section" style="display:none;">
-                    <input id="deleteId" type="number" class="form-control mb-2" placeholder="ID del laboratorio">
-                    <button class="btn btn-danger" onclick="eliminarLaboratorio()">Eliminar</button>
+                <!-- Editar -->
+                <div id="editar" class="admin-section">
+                    <input id="editarId" type="number" class="form-control mb-2" placeholder="ID a editar">
+                    <input id="editarNombre" class="form-control mb-2" placeholder="Nuevo nombre">
+                    <button class="btn btn-warning mt-2" onclick="editarLaboratorio()">Editar</button>
+                    <button type="button" class="btn btn-secondary mt-2 limpiar-btn">Limpiar</button>
+                    <pre id="outputEditar" class="mt-2"></pre>
+                </div>
+
+                <!-- Eliminar -->
+                <div id="eliminar" class="admin-section">
+                    <input id="eliminarId" type="number" class="form-control mb-2" placeholder="ID a eliminar">
+                    <button class="btn btn-danger mt-2" onclick="eliminarLaboratorio()">Eliminar</button>
+                    <button type="button" class="btn btn-secondary mt-2 limpiar-btn">Limpiar</button>
                     <pre id="outputEliminar" class="mt-3"></pre>
                 </div>
+            </div>
+        </div>
+    </main>
 
+    <!-- Modal de edición -->
+    <div id="modal" class="modal-container d-none">
+        <div class="modal-content">
+            <h5>Editar Laboratorio</h5>
+            <input id="editId" type="hidden">
+            <input id="editNombre" class="form-control my-1" placeholder="Nombre del laboratorio">
+            <div class="text-end mt-3">
+                <button class="btn btn-primary me-2" onclick="guardarEdicion()">Guardar</button>
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal de confirmación de borrado -->
+    <div id="modalEliminar" class="modal-container d-none">
+        <div class="modal-content">
+            <h5>¿Seguro que deseas eliminar este laboratorio?</h5>
+            <input id="confirmarId" type="hidden">
+            <div class="text-end mt-3">
+                <button class="btn btn-danger me-2" onclick="eliminarLaboratorioConfirmado()">Sí, eliminar</button>
+                <button class="btn btn-secondary" onclick="cerrarConfirmacion()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 bg-light">
+        <p>&copy; 2025 InfoMedica. Todos los derechos reservados.</p>
+    </footer>
+
     <script src="js/adminLabs.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
