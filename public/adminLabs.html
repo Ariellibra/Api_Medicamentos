@@ -169,7 +169,10 @@
     <!-- Modal de confirmación de borrado -->
     <div id="modalEliminar" class="modal-container d-none">
         <div class="modal-content">
-            <h5>¿Seguro que deseas eliminar este laboratorio?</h5>
+            <h5 class="text-danger">⚠️ Advertencia</h5>
+            <p id="mensajeAdvertencia">
+                Si borra este laboratorio, se eliminarán todos los medicamentos asociados.
+            </p>
             <input id="confirmarId" type="hidden">
             <div class="text-end mt-3">
                 <button class="btn btn-danger me-2" onclick="eliminarLaboratorioConfirmado()">Sí, eliminar</button>

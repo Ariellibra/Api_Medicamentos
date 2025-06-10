@@ -64,4 +64,18 @@ router.delete("/:id", async (req, res, next) => {
     }
 });
 
+// GET /laboratorios/:id/medicamentos/count - cantidad de medicamentos asociados a un laboratorio
+router.get("/:id/medicamentos/count", async (req, res) => {
+    try {
+        const id = +req.params.id;
+        const [rows] = await db.query(
+            "SELECT COUNT(*) as total FROM medicamentos WHERE laboratorio_id = ?",
+            [id]
+        );
+        res.json({ total: rows[0].total });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

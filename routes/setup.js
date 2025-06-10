@@ -29,7 +29,7 @@ router.post("/", async (_req, res) => {
         laboratorio_id INT,
         cobertura DECIMAL(5,2),
         copago DECIMAL(10,2),
-        FOREIGN KEY (laboratorio_id) REFERENCES laboratorios(id)
+        FOREIGN KEY (laboratorio_id) REFERENCES laboratorios(id) ON DELETE CASCADE
       );
     `);
 

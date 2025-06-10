@@ -133,10 +133,21 @@ async function eliminarLaboratorioConfirmado() {
     }
 }
 
-function confirmarBorrado(id) {
+async function confirmarBorrado(id) {
     $("confirmarId").value = id;
     $("modalEliminar").classList.remove("d-none");
     $("modalEliminar").classList.add("d-flex");
+
+    try {
+        const r = await fetch(`/laboratorios/${id}/medicamentos/count`);
+        const data = await r.json();
+        $("mensajeAdvertencia").innerHTML = `
+            ⚠️ Este laboratorio tiene <strong>${data.total}</strong> medicamento${data.total !== 1 ? "s" : ""} asociado${data.total !== 1 ? "s" : ""}.
+            Si lo eliminás, <strong>todos serán borrados permanentemente</strong>.
+        `;
+    } catch (e) {
+        $("mensajeAdvertencia").textContent = "Advertencia: si este laboratorio tiene medicamentos, serán borrados permanentemente.";
+    }
 }
 
 function cerrarConfirmacion() {
