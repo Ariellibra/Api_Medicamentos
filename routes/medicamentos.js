@@ -38,7 +38,7 @@ router.get("/filtro/:droga", async (req, res, next) => {
   }
 });
 
-// GET /medicamentos/filtro/:marca - Buscar por marca
+// GET /medicamentos/marca/:nombre - Buscar por marca
 router.get("/marca/:nombre", async (req, res, next) => {
   try {
     const nombre = `%${req.params.nombre}%`;
@@ -50,7 +50,7 @@ router.get("/marca/:nombre", async (req, res, next) => {
       JOIN laboratorios l ON m.laboratorio_id = l.id
       WHERE m.marca LIKE ?
     `, [nombre]);
-    if (!rows.length) return res.status(404).json({ mensaje: "No se encontraron medicamentos con esa nombre" });
+    if (!rows.length) return res.status(404).json({ mensaje: "No se encontraron medicamentos con esa marca" });
     res.json(rows);
   } catch (err) {
     next(err);
