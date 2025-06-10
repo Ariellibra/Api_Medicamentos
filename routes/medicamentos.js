@@ -43,12 +43,12 @@ router.get("/marca/:nombre", async (req, res, next) => {
   try {
     const nombre = `%${req.params.nombre}%`;
     const [rows] = await db.query(`
-      SELECT m.id, m.nombre, m.marca, m.presentacion,
+      SELECT m.id, m.marca, m.droga, m.presentacion,
              l.nombre AS laboratorio,
              m.cobertura, m.copago
       FROM medicamentos m
       JOIN laboratorios l ON m.laboratorio_id = l.id
-      WHERE m.nombre LIKE ?
+      WHERE m.marca LIKE ?
     `, [nombre]);
     if (!rows.length) return res.status(404).json({ mensaje: "No se encontraron medicamentos con esa nombre" });
     res.json(rows);
