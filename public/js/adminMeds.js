@@ -65,33 +65,32 @@ async function crearMedicamento(e) {
 
 // Buscar medicamento por ID o texto
 async function buscarMedicamento() {
-    const id = $("buscarId").value;
-    const texto = $("buscarTexto").value.trim().toLowerCase();
-    let resultado = null;
+    const id = $("buscarId").value.trim();
+    const texto = $("buscarTexto").value.trim();
+
     try {
         if (id) {
             const r = await fetch(`/medicamentos/${id}`);
             if (!r.ok) throw new Error("No encontrado");
-            resultado = await r.json();
+            const resultado = await r.json();
             rellenarCamposEditarYEliminar(resultado);
+            $("resultadoBuscar").textContent = JSON.stringify(resultado, null, 2);
         } else if (texto) {
-            const r = await fetch("/medicamentos");
-            const data = await r.json();
-            const filtro = data.find((med) =>
-                med.marca?.toLowerCase().includes(texto) ||
-                med.laboratorio?.toLowerCase().includes(texto)
-            );
-            if (!filtro) throw new Error("No encontrado");
-            resultado = filtro;
-            rellenarCamposEditarYEliminar(resultado);
+            const r = await fetch(`/medicamentos/filtro?texto=${encodeURIComponent(texto)}`);
+            if (!r.ok) throw new Error("No encontrado");
+            const resultados = await r.json();
+            if (resultados.length === 1) {
+                rellenarCamposEditarYEliminar(resultados[0]);
+            }
+            $("resultadoBuscar").textContent = JSON.stringify(resultados, null, 2);
         } else {
             throw new Error("Ingrese un ID o texto para buscar");
         }
-        $("resultadoBuscar").textContent = JSON.stringify(resultado, null, 2);
     } catch (e) {
         $("resultadoBuscar").textContent = e.message;
     }
 }
+
 
 // Rellenar los campos de editar/eliminar
 function rellenarCamposEditarYEliminar(med) {
