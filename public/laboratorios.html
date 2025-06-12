@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorios - SanaTres7+</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease-in-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      transition: transform 0.3s ease;
+      box-shadow: 0 0 20px rgba(0, 123, 255, 0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header py-3 bg-light">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="logo d-flex align-items-center">
+        <img src="img/logo.png.png" alt="Logo" style="height: 40px; margin-right: 10px;">
+        <span class="fw-bold">SanaTres7+</span>
+      </div>
+      <nav class="navbar d-flex align-items-center">
+        <a href="index.html" class="me-3">🏠 Inicio</a>
+        <a href="productos.html" class="me-3">💊 Productos</a>
+        <a href="laboratorios.html" class="me-3">🧪 Laboratorios</a>
+        <a href="administracion.html" class="btn btn-primary">Ingresar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container py-5">
+    <h2 class="text-center mb-5">🧪 Conocé Nuestros Laboratorios</h2>
+    <div class="row g-4">
+
+      <div class="col-md-6 fade-in">
+        <div class="card p-3 h-100">
+          <img src="img/Laboratorio1.jpg" class="card-img-top" alt="Genéricos S.A.">
+          <div class="card-body">
+            <h4 class="card-title">Genéricos S.A.</h4>
+            <p class="card-text">Fundado en 1985, Genéricos S.A. es líder en medicamentos esenciales. Se especializa en producción económica con altos estándares de calidad internacional.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 fade-in">
+        <div class="card p-3 h-100">
+          <img src="img/Laboratorio2.jpg" class="card-img-top" alt="SaludPlus">
+          <div class="card-body">
+            <h4 class="card-title">SaludPlus</h4>
+            <p class="card-text">Desde 1997, SaludPlus ofrece tratamientos innovadores y suplementos nutricionales. Sus fórmulas son desarrolladas por profesionales argentinos con proyección internacional.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 fade-in">
+        <div class="card p-3 h-100">
+          <img src="img/Laboratorio3.webp" class="card-img-top" alt="Medicor">
+          <div class="card-body">
+            <h4 class="card-title">Medicor</h4>
+            <p class="card-text">Medicor nació en 2001 con el objetivo de mejorar la distribución en zonas rurales. Su compromiso es la accesibilidad sin perder eficacia terapéutica.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 fade-in">
+        <div class="card p-3 h-100">
+          <img src="img/Laboratorio4.jpg" class="card-img-top" alt="Farmaco S.A.">
+          <div class="card-body">
+            <h4 class="card-title">Farmaco S.A.</h4>
+            <p class="card-text">Activo desde 1990, Farmaco S.A. se especializa en dermocosmética y tratamientos crónicos. Su laboratorio integra tecnología de punta con responsabilidad social.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="text-center bg-dark text-white py-4 mt-5">
+    <p>&copy; 2025 SanaTres7+. Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+
+</html>
