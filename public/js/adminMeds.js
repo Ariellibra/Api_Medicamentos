@@ -243,6 +243,19 @@ const BASE_URL = location.protocol === 'file:'
     ? "https://api-medicamentos.librahost.com.ar"
     : "";
 
+// Obtener lista de laboratorios válidos
+async function obtenerLaboratorios() {
+    try {
+        const r = await fetch(`${BASE_URL}/laboratorios`);
+        if (!r.ok) throw new Error("No se pudieron cargar los laboratorios");
+        const labs = await r.json();
+        return labs.map(l => l.nombre.toLowerCase());
+    } catch (e) {
+        console.error(e);
+        return [];
+    }
+}
+
 // Cargar todos los medicamentos en tabla
 async function cargarTabla() {
     const r = await fetch(`${BASE_URL}/medicamentos`);
@@ -252,19 +265,17 @@ async function cargarTabla() {
     data.forEach((med) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-      <td>${med.id}</td>
-      <td>${med.droga}</td>
-      <td>${med.marca}</td>
-      <td>${med.laboratorio}</td>
-      <td>${med.cobertura}%</td>
-      <td>$${med.copago}</td>
-      <td>
-        <button class='btn btn-sm btn-outline-primary' onclick='abrirModal(${JSON.stringify(
-            med
-        )})'>✏️</button>
-        <button class='btn btn-sm btn-outline-danger' onclick='confirmarBorrado(${med.id})'>🗑️</button>
-      </td>
-    `;
+            <td>${med.id}</td>
+            <td>${med.droga}</td>
+            <td>${med.marca}</td>
+            <td>${med.laboratorio}</td>
+            <td>${med.cobertura}%</td>
+            <td>$${med.copago}</td>
+            <td>
+                <button class='btn btn-sm btn-outline-primary' onclick='abrirModal(${JSON.stringify(med)})'>✏️</button>
+                <button class='btn btn-sm btn-outline-danger' onclick='confirmarBorrado(${med.id})'>🗑️</button>
+            </td>
+        `;
         tbody.appendChild(tr);
     });
 }
@@ -272,6 +283,15 @@ async function cargarTabla() {
 // Crear medicamento
 async function crearMedicamento(e) {
     e.preventDefault();
+
+    const laboratorioIngresado = $("laboratorio").value.trim().toLowerCase();
+    const laboratoriosDisponibles = await obtenerLaboratorios();
+
+    if (!laboratoriosDisponibles.includes(laboratorioIngresado)) {
+        $("outputCrear").textContent = `Error: El laboratorio "${laboratorioIngresado}" no existe.`;
+        return;
+    }
+
     const datos = {
         DROGA: $("droga").value,
         MARCA: $("marca").value,
@@ -280,11 +300,13 @@ async function crearMedicamento(e) {
         COBERTURA: +$("cobertura").value,
         COPAGO: +$("copago").value,
     };
-    const r = await fetch("/medicamentos", {
+
+    const r = await fetch(`${BASE_URL}/medicamentos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(datos),
     });
+
     const j = await r.json();
     $("outputCrear").textContent = JSON.stringify(j, null, 2);
     cargarTabla();
@@ -297,13 +319,13 @@ async function buscarMedicamento() {
 
     try {
         if (id) {
-            const r = await fetch(`/medicamentos/${id}`);
+            const r = await fetch(`${BASE_URL}/medicamentos/${id}`);
             if (!r.ok) throw new Error("No encontrado");
             const resultado = await r.json();
             rellenarCamposEditarYEliminar(resultado);
             $("resultadoBuscar").textContent = JSON.stringify(resultado, null, 2);
         } else if (texto) {
-            const r = await fetch(`/medicamentos/filtro?texto=${encodeURIComponent(texto)}`);
+            const r = await fetch(`${BASE_URL}/medicamentos/filtro?texto=${encodeURIComponent(texto)}`);
             if (!r.ok) throw new Error("No encontrado");
             const resultados = await r.json();
             if (resultados.length === 1) {
@@ -318,7 +340,6 @@ async function buscarMedicamento() {
     }
 }
 
-// Rellenar los campos de editar/eliminar
 function rellenarCamposEditarYEliminar(med) {
     $("editarId").value = med.id;
     $("editarDroga").value = med.droga;
@@ -332,6 +353,15 @@ function rellenarCamposEditarYEliminar(med) {
 
 // Editar medicamento
 async function editarMedicamento() {
+    const laboratorioIngresado = $("editarLab").value.trim().toLowerCase();
+    const laboratoriosDisponibles = await obtenerLaboratorios();
+
+    if (!laboratoriosDisponibles.includes(laboratorioIngresado)) {
+        $("outputEditar").textContent = `Error: El laboratorio "${laboratorioIngresado}" no existe.`;
+        alert("Laboratorio no válido.");
+        return;
+    }
+
     const id = $("editarId").value;
     const datos = {
         DROGA: $("editarDroga").value,
@@ -341,8 +371,9 @@ async function editarMedicamento() {
         COBERTURA: +$("editarCobertura").value,
         COPAGO: +$("editarCopago").value,
     };
+
     try {
-        const r = await fetch(`/medicamentos/${id}`, {
+        const r = await fetch(`${BASE_URL}/medicamentos/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos),
@@ -368,7 +399,7 @@ async function eliminarMedicamento() {
 async function eliminarMedicamentoConfirmado() {
     const id = $("confirmarId").value;
     try {
-        const r = await fetch(`/medicamentos/${id}`, { method: "DELETE" });
+        const r = await fetch(`${BASE_URL}/medicamentos/${id}`, { method: "DELETE" });
         const j = await r.json();
         if (!r.ok) throw new Error(j.mensaje || "Error al eliminar");
 
@@ -415,6 +446,14 @@ function cerrarModal() {
 }
 
 async function guardarEdicion() {
+    const laboratorioIngresado = $("editLab").value.trim().toLowerCase();
+    const laboratoriosDisponibles = await obtenerLaboratorios();
+
+    if (!laboratoriosDisponibles.includes(laboratorioIngresado)) {
+        alert(`El laboratorio "${laboratorioIngresado}" no existe.`);
+        return;
+    }
+
     const id = $("editId").value;
     const datos = {
         DROGA: $("editDroga").value,
@@ -424,8 +463,9 @@ async function guardarEdicion() {
         COBERTURA: +$("editCobertura").value,
         COPAGO: +$("editCopago").value,
     };
+
     try {
-        const r = await fetch(`/medicamentos/${id}`, {
+        const r = await fetch(`${BASE_URL}/medicamentos/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos),
@@ -453,11 +493,10 @@ function limpiarInputsEnSeccion(seccionId) {
 }
 
 // Iniciar
-cargarTabla();
-
 document.addEventListener("DOMContentLoaded", () => {
-    const botonesLimpiar = document.querySelectorAll(".limpiar-btn");
+    cargarTabla();
 
+    const botonesLimpiar = document.querySelectorAll(".limpiar-btn");
     botonesLimpiar.forEach(boton => {
         boton.addEventListener("click", () => {
             const seccion = boton.closest(".admin-section");
@@ -467,4 +506,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
-

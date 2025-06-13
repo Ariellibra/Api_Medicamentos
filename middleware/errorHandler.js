@@ -5,14 +5,13 @@ function errorHandler(err, req, res, next) {
   // Seteo de status por defecto (500)
   const statusCode = err.statusCode || 500;
 
-  // Mensaje público (según entorno)
+  // Mensaje público
   const response = {
     ok: false,
     status: statusCode,
     mensaje: err.message || "Error interno del servidor",
   };
 
-  // Extra para desarrollo (no lo muestres en producción)
   if (process.env.NODE_ENV === "development" && err.stack) {
     response.stack = err.stack;
   }
