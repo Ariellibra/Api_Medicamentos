@@ -153,7 +153,7 @@ router.delete("/:id", async (req, res, next) => {
     const id = +req.params.id;
     const [result] = await db.query("DELETE FROM medicamentos WHERE id=?", [id]);
     if (!result.affectedRows) return res.status(404).json({ mensaje: "Medicamento no encontrado" });
-    res.sendStatus(204);
+    res.status(200).json({ mensaje: "Medicamento eliminado correctamente" });
   } catch (err) {
     next(err);
   }

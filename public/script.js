@@ -61,7 +61,7 @@ async function cargarMedicamentos() {
 cargarMedicamentos();
 */
 
-// Crear medicamento
+// Crear un medicamento
 async function crearMedicamento(e) {
     e.preventDefault();
     const datos = {

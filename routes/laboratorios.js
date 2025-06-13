@@ -59,6 +59,7 @@ router.delete("/:id", async (req, res, next) => {
         const [result] = await db.query("DELETE FROM laboratorios WHERE id = ?", [id]);
         if (!result.affectedRows) return res.status(404).json({ mensaje: "Laboratorio no encontrado" });
         res.sendStatus(204);
+        res.json({ mensaje: "Laboratorio eliminado" });
     } catch (err) {
         next(err);
     }
